@@ -42,6 +42,24 @@ Durante l'ascolto funzionano anche senza nominare Jukebox i comandi base di Alex
 
 Quando la ricerca è incerta, Jukebox chiede conferma ("Intendi Sole di …?"): con "no" propone il risultato successivo.
 
+## Usarlo come sveglia
+
+Le sveglie di Alexa suonano solo i suoni di Amazon, e una skill non può far partire musica da sola a un orario. La strada è una **routine** nell'app Alexa che, all'ora scelta, pronuncia per te il comando:
+
+1. App Alexa → **Altro** → **Routine** → **+**.
+2. **Quando accade**: *Programma*, con orario e giorni.
+3. **Aggiungi azione** → *Volume* (facoltativo, per non partire a tutto volume), poi **Aggiungi azione** → *Personalizzata* e scrivi il comando, per esempio `chiedi a jukebox di mettere musica classica come sveglia`.
+4. In **Da** scegli l'Echo che deve suonare, e salva.
+
+Nel comando puoi mettere qualsiasi richiesta, con o senza la coda "come sveglia", "per svegliarmi", "al risveglio": Jukebox la toglie prima di cercare. Per generi e atmosfere la coda cambia la ricerca: "musica classica come sveglia" trova una playlist pensata per il mattino (per esempio *Classical Morning*), mentre "musica classica" da sola trova una playlist qualsiasi del genere. Esempi:
+
+- `chiedi a jukebox di mettere musica classica come sveglia`
+- `chiedi a jukebox di svegliarmi con una playlist di musica jazz`
+- `chiedi a jukebox di mettere l'album Wow dei Verdena come sveglia`
+- `chiedi a jukebox di svegliarmi con i Verdena`
+- `chiedi a jukebox di mettere Albachiara per svegliarmi`
+- `chiedi a jukebox di mettere musica per svegliarmi`
+
 ## Come funziona
 
 ```
@@ -133,7 +151,7 @@ Il server non deve collegarsi ad Amazon: sei tu a dire ad Amazon dove si trova i
 
 1. Vai su [developer.amazon.com/alexa/console/ask](https://developer.amazon.com/alexa/console/ask) ed entra con l'account del tuo Echo.
 2. **Create Skill**: nome `Jukebox`, lingua **Italian (IT)**, tipo **Custom**, hosting **Provision your own**, template **Start from scratch**.
-3. **Interaction Model → JSON Editor**: incolla il contenuto di `skill-package/interactionModels/custom/it-IT.json`, poi **Save** e **Build skill**. Con oltre settemila frasi la compilazione richiede qualche minuto.
+3. **Interaction Model → JSON Editor**: incolla il contenuto di `skill-package/interactionModels/custom/it-IT.json`, poi **Save** e **Build skill**. Con oltre ottomila frasi la compilazione richiede qualche minuto.
 4. **Interfaces**: attiva **Audio Player**, poi di nuovo **Build skill**.
 5. **Endpoint**: scegli **HTTPS**, scrivi `https://jukebox.example.com/alexa` in Default Region e seleziona *"My development endpoint has a certificate from a trusted certificate authority"*. Copia lo **Skill ID** (lo mostra la console sopra i campi Lambda: è lo stesso anche con HTTPS), poi **Save**.
 6. Scrivi lo Skill ID in `JUKEBOX_SKILL_ID` dentro `/etc/jukebox.env` e riavvia: `sudo systemctl restart jukebox`.
@@ -157,7 +175,7 @@ Lo script controlla che nessuna frase compaia in due intent e che non ci siano c
 python3 tests/test_parse.py
 ```
 
-verifica l'interprete delle frasi (55 casi). `tests/simulate.py` simula invece le richieste di Alexa contro la logica completa della skill e fa ricerche vere su YouTube Music, quindi va lanciato sul server con la configurazione caricata:
+verifica l'interprete delle frasi (63 casi). `tests/simulate.py` simula invece le richieste di Alexa contro la logica completa della skill e fa ricerche vere su YouTube Music, quindi va lanciato sul server con la configurazione caricata:
 
 ```bash
 sudo runuser -u jukebox -- bash -c 'set -a; . /etc/jukebox.env; cd /opt/jukebox/app && /opt/jukebox/venv/bin/python tests/simulate.py'

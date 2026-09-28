@@ -347,7 +347,11 @@ def _resolve(cmd: Command, chosen=None, confirmed=False, store=None):
                     f"Radio a partire da {_describe(seed)}.", radio_seed=seed["id"])
 
     if kind == "playlist":  # non è una playlist personale (vedi sopra)
-        title, tracks = music.search_playlist(q)
+        title, tracks = ("", [])
+        if cmd.wake:  # "musica classica come sveglia" -> prima la versione per il risveglio
+            title, tracks = music.search_playlist(f"{q} per svegliarsi")
+        if not tracks:
+            title, tracks = music.search_playlist(q)
         if not tracks:
             return Nothing(f"Non ho trovato playlist per {q}.")
         return Plan(tracks, 0, f"Ecco la playlist {title}.", radio_seed=tracks[-1]["id"])

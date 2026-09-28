@@ -25,6 +25,8 @@ VERBS_ALL = [
     "vorrei ascoltare",
     "fai partire", "far partire", "avvia", "avviare", "manda", "mandare", "spara", "sparare",
     "cerca", "cercare", "trova", "trovare", "play",
+    # per le routine della sveglia: "chiedi a Jukebox di svegliarmi con ..."
+    "svegliami con", "svegliarmi con", "sveglia con", "svegliaci con", "svegliarci con",
 ]
 # Sottoinsieme usato per le forme con molte varianti, per non esplodere di numero.
 VERBS_MAIN = [
@@ -55,6 +57,7 @@ INTENTS = {
     "PlaySongIntent": (SLOT, expand(VERBS_ALL, [
         "{q}", "la canzone {q}", "il brano {q}", "il pezzo {q}", "il singolo {q}",
         "la canzone che fa {q}", "quella canzone che fa {q}", "la canzone che dice {q}",
+        "come sveglia {q}", "per svegliarmi {q}", "per la sveglia {q}",
     ])),
     "PlayAlbumIntent": (SLOT, expand(VERBS_ALL, [
         "l'album {q}", "il disco {q}", "tutto l'album {q}", "tutto il disco {q}",
@@ -274,6 +277,8 @@ def build():
         unique = []
         for s in samples:
             s = " ".join(s.replace("{d}", "{duration}").split())
+            if s.count("svegli") > 1:  # "svegliami con come sveglia ...": combinazione senza senso
+                continue
             if s in seen:
                 if seen[s] != name:
                     raise SystemExit(f"frase duplicata fra {seen[s]} e {name}: {s!r}")

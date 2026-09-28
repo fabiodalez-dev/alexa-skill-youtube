@@ -44,6 +44,7 @@ class Command:
     query: str = ""          # testo principale (brano, album, artista, playlist)
     album: str = ""          # per song_in_album
     number: int = 0          # per album_track (1 = prima, -1 = ultima)
+    wake: bool = False       # "... come sveglia": per generi e atmosfere si cerca la versione mattutina
 
 
 def _clean(text: str) -> str:
@@ -69,9 +70,26 @@ def _strip_lead(text: str, words: str) -> str:
     return re.sub(rf"^(?:{words})\s+", "", text).strip()
 
 
+# Code da sveglia: "Wow dei Verdena come sveglia", "musica classica per svegliarmi".
+# Arrivano dalle routine di Alexa programmate all'orario della sveglia.
+WAKE_RE = re.compile(r"\s+(?:come|per la|da|per) sveglia$|\s+per (?:svegliarmi|svegliarci|svegliarsi|il risveglio)$"
+                     r"|\s+al risveglio$|\s+(?:di|la) mattina$|\s+stamattina$")
+
+
 def parse(text: str, hint: str = "song") -> Command:
     """`hint` viene dall'intent che Alexa ha scelto; la frase può smentirlo."""
     t = _clean(text)
+    m = WAKE_RE.search(t)
+    rest = t[:m.start()] if m else t
+    if m and re.fullmatch(r"(?:(?:della |un po' di |una |delle |qualche )?(?:musica|canzon[ei]|brani|qualcosa))?", rest):
+        # "musica per svegliarmi", "qualcosa come sveglia": nessun titolo, solo l'intenzione
+        return Command("playlist", "musica", wake=True)
+    cmd = _parse(rest, hint)
+    cmd.wake = bool(m)
+    return cmd
+
+
+def _parse(t: str, hint: str) -> Command:
 
     # --- forme esplicite dall'intent (il prefisso della frase è già stato tolto) ---
     if hint == "discography":

@@ -158,3 +158,12 @@ else:
     run("catch-all mia playlist", "PlaySongIntent", f"la mia playlist {name.lower()}")
     run("i miei preferiti", "MyFavoritesIntent")
     run("in loop la mia playlist", "LoopPlayIntent", f"la mia playlist {name.lower()}")
+
+print("\n--- frasi da sveglia (routine di Alexa) ---")
+run("genere", "PlaySongIntent", "della musica classica")
+run("genere come sveglia", "PlaySongIntent", "musica classica come sveglia")
+run("playlist di genere", "PlayPlaylistIntent", "musica classica")
+run("album come sveglia", "PlayAlbumIntent", "wow dei verdena come sveglia")
+run("artista per svegliarmi", "PlayArtistIntent", "vasco rossi per svegliarmi")
+run("brano come sveglia", "PlaySongIntent", "albachiara come sveglia")
+run("musica per svegliarmi", "PlaySongIntent", "musica per svegliarmi")
