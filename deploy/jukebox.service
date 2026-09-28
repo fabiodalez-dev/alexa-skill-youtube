@@ -1,0 +1,23 @@
+[Unit]
+Description=Jukebox - skill Alexa per YouTube Music
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=jukebox
+Group=jukebox
+WorkingDirectory=/opt/jukebox/app
+EnvironmentFile=/etc/jukebox.env
+Environment=PATH=/opt/jukebox/bin:/opt/jukebox/venv/bin:/usr/bin:/bin
+ExecStart=/opt/jukebox/venv/bin/gunicorn --bind 127.0.0.1:8099 --workers 1 --threads 16 --timeout 120 jukebox.app:app
+Restart=on-failure
+RestartSec=5
+UMask=0022
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/cache/jukebox /var/lib/jukebox
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

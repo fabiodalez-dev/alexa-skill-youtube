@@ -1,0 +1,10 @@
+flask
+gunicorn
+yt-dlp[default]
+ytmusicapi
+rapidfuzz
+requests
+ask-sdk-core
+ask-sdk-webservice-support
+# oscrypto da PyPI non riconosce OpenSSL 3.0.x ("Error detecting the version of libcrypto")
+oscrypto @ git+https://github.com/wbond/oscrypto.git@1547f535001ba568b239b8797465536759c742a3

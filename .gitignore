@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.env
+!deploy/jukebox.env.example
+*.sqlite
+*.m4a
+.DS_Store
+CLAUDE.md
+.claude/
