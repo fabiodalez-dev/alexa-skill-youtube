@@ -108,7 +108,7 @@ sudo chown root:jukebox /etc/jukebox.env && sudo chmod 640 /etc/jukebox.env
 openssl rand -hex 32
 ```
 
-Apri `/etc/jukebox.env`, incolla la chiave generata in `JUKEBOX_SECRET` e imposta `JUKEBOX_PUBLIC_URL` con il tuo dominio. `JUKEBOX_SKILL_ID` lo riempi dopo aver creato la skill.
+Apri `/etc/jukebox.env`, incolla la chiave generata in `JUKEBOX_SECRET` e imposta `JUKEBOX_PUBLIC_URL` con il tuo dominio. `JUKEBOX_SKILL_ID` lo riempi dopo aver creato la skill; per le tue playlist togli il `#` davanti a `JUKEBOX_YT_CHANNEL` e scrivi il tuo canale. Se lasci la chiave o il dominio di esempio il servizio non parte e `journalctl -u jukebox` dice quale valore manca.
 
 **5. Servizio**
 

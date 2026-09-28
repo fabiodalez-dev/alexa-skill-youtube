@@ -292,6 +292,8 @@ def _original_title(ep: dict) -> dict:
 # --- playlist personali (profilo pubblico YouTube) ------------------------------
 
 USER_CHANNEL = os.environ.get("JUKEBOX_YT_CHANNEL", "")  # es. https://www.youtube.com/@tuocanale
+if "tuocanale" in USER_CHANNEL:  # segnaposto dell'esempio lasciato com'è
+    USER_CHANNEL = ""
 FAVORITES_WORDS = {"preferiti", "preferite", "favorites", "favoriti", "mi piace", "canzoni preferite",
                    "brani preferiti", "musica preferita"}
 _user_cache = {"at": 0.0, "items": []}

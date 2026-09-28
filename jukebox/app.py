@@ -15,6 +15,29 @@ from .state import Store
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 log = logging.getLogger("jukebox")
 
+
+def _check_config() -> None:
+    """Rifiuta di partire con i segnaposto di deploy/jukebox.env.example, invece di
+    funzionare a metà: URL audio verso example.com o firmati con una chiave pubblica."""
+    problems = []
+    secret = os.environ.get("JUKEBOX_SECRET", "")
+    if len(secret) < 32 or secret == "cambiami":
+        problems.append("JUKEBOX_SECRET mancante o di esempio: generane una con  openssl rand -hex 32")
+    url = os.environ.get("JUKEBOX_PUBLIC_URL", "")
+    if not url.startswith("https://") or "example.com" in url:
+        problems.append("JUKEBOX_PUBLIC_URL mancante o di esempio: serve l'indirizzo HTTPS reale del server")
+    if problems:
+        raise SystemExit("Configurazione non valida in /etc/jukebox.env:\n  - " + "\n  - ".join(problems))
+    if not os.environ.get("JUKEBOX_SKILL_ID"):
+        log.warning("JUKEBOX_SKILL_ID vuoto: accetto richieste da qualsiasi skill Alexa. "
+                    "Impostalo appena crei la skill nella console.")
+    if "tuocanale" in os.environ.get("JUKEBOX_YT_CHANNEL", ""):
+        log.warning("JUKEBOX_YT_CHANNEL è ancora il segnaposto: playlist personali disattivate.")
+        os.environ["JUKEBOX_YT_CHANNEL"] = ""
+
+
+_check_config()
+
 app = Flask(__name__)
 store = Store(os.environ.get("JUKEBOX_DB", "/var/lib/jukebox/state.sqlite"))
 SKILL_ID = os.environ.get("JUKEBOX_SKILL_ID", "")
